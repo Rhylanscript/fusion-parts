@@ -2,10 +2,13 @@ import math
 import adsk.core
 
 from ..core.app import FusionPartsError
+from ..core.bore_inputs import add_bore_inputs, read_bore
+from ..core.bores import bore_outer_radius, bore_segments
 from ..core.command import DialogCommand
 from ..core.features import extrude_profile
 from ..core.output import add_output_dropdown, resolve_target
-from ..core.sketches import draw_segments, new_sketch
+from ..core.sketches import draw_segments, largest_profile, new_sketch
+from ..core.units import mm
 from .gear_profile import GearSpec, outline_segments
 
 TEETH_ID = "teeth"
@@ -15,6 +18,8 @@ THICKNESS_ID = "thickness"
 
 MIN_PRESSURE_ANGLE_DEG = 10
 MAX_PRESSURE_ANGLE_DEG = 30
+
+MIN_WALL_MM = 0.5
 
 class SpurGearCommand(DialogCommand):
     cmd_id = "fp_spur_gear_cmd"
@@ -35,17 +40,35 @@ class SpurGearCommand(DialogCommand):
         inputs.addValueInput(
             THICKNESS_ID, "Thickness", "mm", adsk.core.ValueInput.createByString("5 mm")
         )
+        add_bore_inputs(inputs)
         add_output_dropdown(inputs)
 
     def on_execute(self, inputs):
         spec = self._read_spec(inputs)
+        bore_choice = read_bore(inputs)
         thickness = inputs.itemById(THICKNESS_ID).value
-        if thickness <= 0: raise FusionPartsError("Thickness must be greater than zero.")
+        if thickness <= 0:
+            raise FusionPartsError("Thickness must be greater than zero.")
+        self._check_bore_fits(spec, bore_choice)
 
         target = resolve_target(inputs, "Spur Gear")
         sketch = new_sketch(target, name="Gear outline")
         draw_segments(sketch, outline_segments(spec))
-        extrude_profile(target, sketch.profiles.item(0), thickness)
+        if bore_choice is not None:
+            bore, clearance = bore_choice
+            draw_segments(sketch, bore_segments(bore, clearance))
+        extrude_profile(target, largest_profile(sketch), thickness)
+
+    def _check_bore_fits(self, spec, bore_choice):
+        """Stop with a clear message if the bore would cut into the teeth."""
+        if bore_choice is None:
+            return
+        bore, clearance = bore_choice
+        limit = spec.root_radius - mm(MIN_WALL_MM)
+        if bore_outer_radius(bore, clearance) > limit:
+            raise FusionPartsError(
+                "The bore is too big for this gear. Use more teeth or a larger module."
+            )
 
     def _read_spec(self, inputs):
         """Read the dialog fields into a GearSpec, checking they make sense."""

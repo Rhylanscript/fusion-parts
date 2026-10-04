@@ -1,4 +1,5 @@
 import adsk.core
+import adsk.fusion
 
 def new_sketch(component, plane=None, name=None):
     """Create a sketch in `component`. Defaults to the XY (top) plane."""
@@ -47,3 +48,21 @@ def draw_segments(sketch, segments):
 def _to_point(xy):
     """Turn an (x, y) tuple into a Fusion Point3D."""
     return adsk.core.Point3D.create(xy[0], xy[1], 0)
+
+def largest_profile(sketch):
+    """Return the profile with the biggest area.
+
+    When a sketch has a shape with a hole in it, Fusion finds two profiles:
+    the shape with a hole, and the holes own area. The largest is the one we
+    want to extrude.
+    """
+    accuracy = adsk.fusion.CalculationAccuracy.LowCalculationAccuracy
+    best = None
+    best_area = 0.0
+    for index in range(sketch.profiles.count):
+        profile = sketch.profiles.item(index)
+        area = profile.areaProperties(accuracy).area
+        if area > best_area:
+            best = profile
+            best_area = area
+    return best
