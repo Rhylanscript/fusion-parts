@@ -2,6 +2,7 @@ import traceback
 import adsk.core
 
 from .generators.spur_gear import SpurGearCommand
+from .core.icons import icon_folder
 
 try:
     import FusionkitRibbonAPI as fusionkit
@@ -34,7 +35,7 @@ def run(context):
             id="fp_spur_gear",
             name="Spur Gear",
             tooltip="Generate a spur gear.",
-            icon_path="",  # placeholder until we make icons
+            icon_path=icon_folder("spur_gear"),
             on_execute=spur_gear.open,
         )
     except Exception:

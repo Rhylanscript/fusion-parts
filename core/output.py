@@ -2,10 +2,16 @@ import adsk.core
 
 from .app import ASSEMBLY, PART, get_design, get_design_intent
 from .components import new_component
+from .icons import icon_folder
 
 OUTPUT_ID = "output"
 OUTPUT_COMPONENT = "New component"
 OUTPUT_BODY = "New body"
+
+_OUTPUT_ICONS = {
+    OUTPUT_COMPONENT: icon_folder("component"),
+    OUTPUT_BODY: icon_folder("body"),
+}
 
 def _allowed_outputs():
     """Which output choices make sense for the kind of file that's open.
@@ -23,10 +29,10 @@ def _allowed_outputs():
 def add_output_dropdown(inputs):
     """Add the Output dropdown to a dialog"""
     dropdown = inputs.addDropDownCommandInput(
-        OUTPUT_ID, "Output", adsk.core.DropDownStyles.TextListDropDownStyle
+        OUTPUT_ID, "Output", adsk.core.DropDownStyles.LabeledIconDropDownStyle
     )
     for index, option in enumerate(_allowed_outputs()):
-        dropdown.listItems.add(option, index == 0)
+        dropdown.listItems.add(option, index == 0, _OUTPUT_ICONS[option])
     return dropdown
 
 def resolve_target(inputs, component_name):
