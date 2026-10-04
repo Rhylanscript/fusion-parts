@@ -3,6 +3,7 @@ import adsk.core
 
 from .generators.spur_gear import SpurGearCommand
 from .generators.pulley import PulleyCommand
+from .generators.belt import BeltCommand
 from .core.icons import icon_folder
 
 try:
@@ -14,6 +15,7 @@ PANEL_ID = "fusionparts_panel"
 
 spur_gear = SpurGearCommand()
 pulley = PulleyCommand()
+belt = BeltCommand()
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -32,6 +34,7 @@ def run(context):
 
         spur_gear.register()
         pulley.register()
+        belt.register()
 
         panel = fusionkit.register_panel(PANEL_ID, "Parts")
         panel.add_button(
@@ -48,6 +51,13 @@ def run(context):
             icon_path=icon_folder("pulley"),
             on_execute=pulley.open,
         )
+        panel.add_button(
+            id="fp_belt",
+            name="Timing Belt",
+            tooltip="Generate a timing belt around two pulleys",
+            icon_path=icon_folder("belt"),
+            on_execute=belt.open,
+        )
     except Exception:
         ui.messageBox("Failed to start:\n" + traceback.format_exc())
 
@@ -58,3 +68,4 @@ def stop(context):
         fusionkit.unregister_panel(PANEL_ID)
     spur_gear.unregister()
     pulley.unregister()
+    belt.unregister()

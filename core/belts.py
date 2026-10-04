@@ -41,24 +41,30 @@ class BeltProfile:
     pitch_line_differential: how far the belt's tension cord sits above the
     pulley's tooth tips. It is why a pulley's outside diameter is smaller
     than its pitch diameter.
+    thickness: overall belt thickness from tooth tip to back, in mm.
     groove: the tooth gap shape, measured from real example pulleys.
     """
 
     name: str
     pitch: float
     pitch_line_differential: float
+    thickness: float
     groove: GrooveShape
 
 BELTS = [
     BeltProfile(
         "HTD 5M", pitch=5.0, pitch_line_differential=0.5715,
+        thickness=3.8,
         groove=GrooveShape(
             flank_radius=1.8842, flank_centre_depth=0.1885,
             flank_centre_offset=0.1445, fillet_radius=0.43, root_depth=1.9983,
         ),
     ),
     BeltProfile(
-        "HTD 3M", pitch=3.0, pitch_line_differential=0.381,  # verify
+        "HTD 3M", 
+        pitch=3.0, 
+        pitch_line_differential=0.381,
+        thickness=2.4,
         groove=GrooveShape(
             flank_radius=0.93, flank_centre_depth=0.27,
             flank_centre_offset=0.0, fillet_radius=0.26,
