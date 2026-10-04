@@ -1,6 +1,8 @@
 import adsk.core
 import adsk.fusion
 
+from .bores import bore_segments
+
 def new_sketch(component, plane=None, name=None):
     """Create a sketch in `component`. Defaults to the XY (top) plane."""
     if plane is None:
@@ -66,3 +68,10 @@ def largest_profile(sketch):
             best = profile
             best_area = area
     return best
+
+def draw_bore(sketch, bore_choice):
+    """Draw the shaft bore into `sketch`. Does nothing when there is no bore."""
+    if bore_choice is None:
+        return
+    bore, clearance = bore_choice
+    draw_segments(sketch, bore_segments(bore, clearance))
