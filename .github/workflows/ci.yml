@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: FusionParts
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: pip install pytest ruff
+
+      - name: Lint
+        working-directory: FusionParts
+        run: ruff check .
+
+      - name: Check every file compiles
+        working-directory: FusionParts
+        run: python -m compileall -q FusionParts.py core generators
+
+      - name: Run tests
+        working-directory: FusionParts
+        run: pytest
