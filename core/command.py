@@ -24,6 +24,17 @@ class _CommandExecuteHandler(adsk.core.CommandEventHandler):
     def notify(self, eventArgs):
         self._owner.on_execute(eventArgs.command.commandInputs)
 
+class _InputChangedHandler(adsk.core.InputChangedEventHandler):
+    """Fusion calls this whenever the user changes a field in the dialog."""
+
+    def __init__(self, owner):
+        super().__init__()
+        self._owner = owner
+
+    @safe_handler
+    def notify(self, eventArgs):
+        self._owner.on_inputs_changed(eventArgs.inputs, eventArgs.input)
+
 
 class DialogCommand:
     """Base class for a generator that has a Fusion dialog.
@@ -52,6 +63,9 @@ class DialogCommand:
 
     def on_execute(self, inputs):
         raise NotImplementedError
+
+    def on_inputs_changed(self, inputs, changed_input):
+        """Optional: runs each time a field changes. Does nothing by default."""
 
     # --- Called from FusionParts.py ---
 
@@ -90,3 +104,7 @@ class DialogCommand:
         execute_handler = _CommandExecuteHandler(self)
         command.execute.add(execute_handler)
         self._dialog_handlers.append(execute_handler)
+        
+        changed_handler = _InputChangedHandler(self)
+        command.inputChanged.add(changed_handler)
+        self._dialog_handlers.append(changed_handler)
