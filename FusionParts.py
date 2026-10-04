@@ -43,8 +43,8 @@ def run(context):
         )
         panel.add_button(
             id="fp_pulley",
-            name="Pulley",
-            tooltip="Generate a pulley.",
+            name="Timing Pulley",
+            tooltip="Generate a timing belt pulley.",
             icon_path=icon_folder("pulley"),
             on_execute=pulley.open,
         )

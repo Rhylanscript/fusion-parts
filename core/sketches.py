@@ -75,3 +75,24 @@ def draw_bore(sketch, bore_choice):
         return
     bore, clearance = bore_choice
     draw_segments(sketch, bore_segments(bore, clearance))
+
+def polygon_segments(points):
+    """Turn corner points into closed ("line", start, end) pieces for draw_segments()."""
+    return [
+        ("line", points[index], points[(index + 1) % len(points)])
+        for index in range(len(points))
+    ]
+
+def model_to_sketch(sketch, x, y, z):
+    """Return the sketch (u, v) position of a model-space point on the sketch plane.
+
+    Sketch axes don't always line up with the model's axes (on the XZ plane,
+    sketch "up" can be model -Z). So we ask Fusion where the sketch's own
+    axes point and measure along them.
+    """
+    to_model = sketch.sketchToModelSpace
+    origin = to_model(adsk.core.Point3D.create(0, 0, 0))
+    u_axis = origin.vectorTo(to_model(adsk.core.Point3D.create(1, 0, 0)))
+    v_axis = origin.vectorTo(to_model(adsk.core.Point3D.create(0, 1, 0)))
+    offset = origin.vectorTo(adsk.core.Point3D.create(x, y, z))
+    return (offset.dotProduct(u_axis), offset.dotProduct(v_axis))
