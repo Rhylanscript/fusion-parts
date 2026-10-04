@@ -29,6 +29,30 @@ def get_design():
     return design
 
 
+PART = "part"
+ASSEMBLY = "assembly"
+HYBRID = "hybrid"
+
+def get_design_intent():
+    """Return PART, ASSEMBLY or HYBRID for the open design.
+
+    Older versions of Fusion don't have this feature. In that case
+    every design behaved like a hybrid, so we return HYBRID.
+    """
+    design = get_design()
+    try:
+        intent = design.designIntent
+        intent_types = adsk.fusion.DesignIntentTypes
+    except AttributeError:
+        return HYBRID
+
+    if intent == intent_types.AssemblyDesignIntentType:
+        return ASSEMBLY
+    if intent == intent_types.PartDesignIntentType:
+        return PART
+    return HYBRID
+
+
 def safe_handler(func):
     """Decorator: wrap a function so errors show a message box"""
 
