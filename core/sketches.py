@@ -96,3 +96,16 @@ def model_to_sketch(sketch, x, y, z):
     v_axis = origin.vectorTo(to_model(adsk.core.Point3D.create(0, 1, 0)))
     offset = origin.vectorTo(adsk.core.Point3D.create(x, y, z))
     return (offset.dotProduct(u_axis), offset.dotProduct(v_axis))
+
+def ring_profile(sketch):
+    """Return the profile that has a hole in it, or None if there isn't one.
+
+    A belt is a thin ring, so the empty space inside it has MORE area than
+    the ring itself. largest_profile() would pick the empty space. Instead we
+    look for the profile made of two loops: an outer edge and an inner edge.
+    """
+    for index in range(sketch.profiles.count):
+        profile = sketch.profiles.item(index)
+        if profile.profileLoops.count == 2:
+            return profile
+    return None
