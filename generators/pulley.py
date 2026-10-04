@@ -66,7 +66,7 @@ class PulleyCommand(DialogCommand):
         floor_radius = root_radius(belt, teeth)
         check_bore_fits(bore_choice, floor_radius, "Use more teeth.")
         outline = self._build_outline(belt, teeth)
-        label_spot = self._plan_label(label, teeth, bore_choice, floor_radius)
+        label_plan = self._plan_label(label, teeth, bore_choice, floor_radius)
 
         name = "%s Timing Pulley %dT" % (belt.name, teeth)
         target = resolve_target(inputs, name)
@@ -85,10 +85,9 @@ class PulleyCommand(DialogCommand):
             body = self._add_cap(target, tip_radius, flange_radius, flanges, teeth_end, +1)
         if bore_choice is not None:
             self._cut_bore(target, bore_choice, height, body)
-        if label_spot is not None:
-            centre_x, text_height = label_spot
+        if label_plan is not None:
             engrave_text(
-                target, f"{str(teeth)}T", (centre_x, 0.0), text_height,
+                target, str(teeth), label_plan.height, label_plan.centre,
                 label.depth, height, [body],
             )
 
@@ -107,13 +106,17 @@ class PulleyCommand(DialogCommand):
         if bore_choice is not None:
             bore, clearance = bore_choice
             inner_radius = bore_outer_radius(bore, clearance)
-        spot = label_fit(len(str(teeth)), inner_radius, floor_radius, label.height)
-        if spot is None:
+        plan = label_fit(
+            len(str(teeth)), inner_radius, floor_radius,
+            label.height, label.on_top, label.offset,
+        )
+        if plan is None:
             raise FusionPartsError(
-                "There isn't room to engrave the tooth count. Use more teeth or a "
-                "smaller bore, or untick 'Engrave tooth count'."
-            )
-        return spot
+                "There isn't room to engrave the tooth count there. Try a smaller "
+                "label offset, fewer digits (more teeth), a smaller bore, or untick "
+                "'Engrave tooth count'."
+               )
+        return plan
 
     def _add_teeth(self, target, outline, length, start):
         """Make the toothed section as the pulley's first body. Returns the body."""

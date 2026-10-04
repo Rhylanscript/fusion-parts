@@ -3,7 +3,7 @@ import adsk.core
 from .features import CUT, extrude_profile
 from .sketches import new_sketch
 
-def engrave_text(component, text, centre, height, depth, top, bodies):
+def engrave_text(component, text, height, centre, depth, top, bodies):
     """Cut `text` into the top face of the part. Lengths are Fusion units.
 
     centre: (x, y) of the middle of the text.

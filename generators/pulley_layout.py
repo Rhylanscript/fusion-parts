@@ -1,4 +1,5 @@
 import math
+from dataclasses import dataclass
 
 from ..core.units import mm
 
@@ -28,25 +29,35 @@ def cap_points(tip_radius, flange_radius, thickness, cone_length, teeth_edge, ou
     points.append((0.0, far_edge))
     return points
 
-def label_fit(label_length, inner_radius, outer_radius, max_height):
-    """Find where, and how big, an engraved label can go. Fusion units.
+@dataclass(frozen=True)
+class LabelPlan:
+    """Where an engraved label goes. Lengths are Fusion units."""
 
-    The label sits on the +X side, between the bore (`inner_radius`, 0 for no
-    bore) and `outer_radius`. The text shrinks from `max_height` until it
-    fits. Returns (centre_x, height), or None if even the smallest size fails.
+    height: float
+    centre: tuple
+
+
+def label_fit(label_length, inner_radius, outer_radius, max_height, on_top, offset):
+    """Find where, and how big, an engraved label can go.
+
+    The label is straight text, centred above the bore (or below it) in the
+    ring between `inner_radius` (0 for no bore) and `outer_radius`. It starts
+    in the middle of that ring; `offset` then moves it away from the pulley's
+    centre (positive) or toward it (negative). The text shrinks from
+    `max_height` until it fits. Returns a LabelPlan, or None if it can't fit.
     """
     margin = mm(LABEL_MARGIN_MM)
     limit = outer_radius - margin
+    direction = 1 if on_top else -1
     height = max_height
     while height >= mm(MIN_LABEL_HEIGHT_MM) - 1e-9:
         half_width = label_length * CHAR_WIDTH * height / 2
         half_height = height / 2
-        if math.hypot(half_width, half_height) <= limit:
-            if inner_radius <= 0:
-                return 0.0, height
-            furthest = math.sqrt(limit**2 - half_height**2) - half_width
-            nearest = inner_radius + margin + half_width
-            if nearest <= furthest:
-                return (nearest + furthest) / 2, height
+        if half_width < limit:
+            far = math.sqrt(limit**2 - half_width**2) - half_height
+            near = inner_radius + margin + half_height if inner_radius > 0 else -far
+            distance = (near + far) / 2 + offset
+            if near <= distance <= far:
+                return LabelPlan(height, (0.0, direction * distance))
         height -= mm(LABEL_STEP_MM)
     return None
