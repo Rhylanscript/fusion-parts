@@ -2,6 +2,7 @@ import traceback
 import adsk.core
 
 from .generators.spur_gear import SpurGearCommand
+from .generators.pulley import PulleyCommand
 from .core.icons import icon_folder
 
 try:
@@ -12,6 +13,7 @@ except ImportError:
 PANEL_ID = "fusionparts_panel"
 
 spur_gear = SpurGearCommand()
+pulley = PulleyCommand()
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -29,6 +31,7 @@ def run(context):
             return
 
         spur_gear.register()
+        pulley.register()
 
         panel = fusionkit.register_panel(PANEL_ID, "Parts")
         panel.add_button(
@@ -37,6 +40,13 @@ def run(context):
             tooltip="Generate a spur gear.",
             icon_path=icon_folder("spur_gear"),
             on_execute=spur_gear.open,
+        )
+        panel.add_button(
+            id="fp_pulley",
+            name="Timing Pulley",
+            tooltip="Generate a timing belt pulley.",
+            icon_path=icon_folder("pulley"),
+            on_execute=pulley.open,
         )
     except Exception:
         ui.messageBox("Failed to start:\n" + traceback.format_exc())
@@ -47,3 +57,4 @@ def stop(context):
     if fusionkit is not None:
         fusionkit.unregister_panel(PANEL_ID)
     spur_gear.unregister()
+    pulley.unregister()
