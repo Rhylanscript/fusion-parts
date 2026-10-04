@@ -1,18 +1,18 @@
 import traceback
 import adsk.core
 
+from .generators import test_cylinder
+
 try:
     import FusionkitRibbonAPI as fusionkit
 except ImportError:
     fusionkit = None
 
-PANEL_ID = "fusionkit_tools_panel"
-
+PANEL_ID = "fusionparts_panel"
 
 def run(context):
-    """Fusion calls this when the add in starts"""
-    app = adsk.core.Application.get()
-    ui = app.userInterface
+    """Fusion calls this when the add-in starts."""
+    ui = adsk.core.Application.get().userInterface
 
     try:
         if fusionkit is None:
@@ -23,22 +23,19 @@ def run(context):
             )
             return
 
-        panel = fusionkit.register_panel(PANEL_ID, "Generators")  # type: ignore[attr-defined]
+        panel = fusionkit.register_panel(PANEL_ID, "Parts")
         panel.add_button(
-            id="fkt_hello",
-            name="Hello",
-            tooltip="test button to confirm addin loads.",
+            id="fp_test_cylinder",
+            name="Test Cylinder",
+            tooltip="Creates a test cylinder to confirm the core helpers work.",
             icon_path="",  # placeholder
-            on_execute=_on_hello,
+            on_execute=test_cylinder.run,
         )
     except Exception:
         ui.messageBox("Failed to start:\n" + traceback.format_exc())
 
-def stop(context):
-    """Fusion calls this when the add in stops. Clean up everything we made."""
-    if fusionkit is not None:
-        fusionkit.unregister_panel(PANEL_ID)  # type: ignore[attr-defined]
 
-def _on_hello():
-    ui = adsk.core.Application.get().userInterface
-    ui.messageBox("FusionParts is alive!")
+def stop(context):
+    """Fusion calls this when the add-in stops. Clean up everything we made."""
+    if fusionkit is not None:
+        fusionkit.unregister_panel(PANEL_ID)
