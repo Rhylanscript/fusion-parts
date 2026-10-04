@@ -1,13 +1,20 @@
+import math
 import adsk.core
 
+from ..core.app import FusionPartsError
 from ..core.command import DialogCommand
 from ..core.features import extrude_profile
 from ..core.output import add_output_dropdown, resolve_target
-from ..core.sketches import add_circle, new_sketch
+from ..core.sketches import draw_segments, new_sketch
+from .gear_profile import GearSpec, outline_segments
 
 TEETH_ID = "teeth"
 MODULE_ID = "module"
+PRESSURE_ANGLE_ID = "pressure_angle"
 THICKNESS_ID = "thickness"
+
+MIN_PRESSURE_ANGLE_DEG = 10
+MAX_PRESSURE_ANGLE_DEG = 30
 
 class SpurGearCommand(DialogCommand):
     cmd_id = "fp_spur_gear_cmd"
@@ -20,18 +27,41 @@ class SpurGearCommand(DialogCommand):
             MODULE_ID, "Module", "mm", adsk.core.ValueInput.createByString("1 mm")
         )
         inputs.addValueInput(
+            PRESSURE_ANGLE_ID,
+            "Pressure angle",
+            "deg",
+            adsk.core.ValueInput.createByString("20 deg"),
+        )
+        inputs.addValueInput(
             THICKNESS_ID, "Thickness", "mm", adsk.core.ValueInput.createByString("5 mm")
         )
         add_output_dropdown(inputs)
 
     def on_execute(self, inputs):
-        teeth = inputs.itemById(TEETH_ID).value
-        module = inputs.itemById(MODULE_ID).value
+        spec = self._read_spec(inputs)
         thickness = inputs.itemById(THICKNESS_ID).value
-
-        outer_radius = module * (teeth + 2) / 2
+        if thickness <= 0: raise FusionPartsError("Thickness must be greater than zero.")
 
         target = resolve_target(inputs, "Spur Gear")
         sketch = new_sketch(target, name="Gear outline")
-        add_circle(sketch, radius=outer_radius)
+        draw_segments(sketch, outline_segments(spec))
         extrude_profile(target, sketch.profiles.item(0), thickness)
+
+    def _read_spec(self, inputs):
+        """Read the dialog fields into a GearSpec, checking they make sense."""
+        spec = GearSpec(
+            teeth=inputs.itemById(TEETH_ID).value,
+            module=inputs.itemById(MODULE_ID).value,
+            pressure_angle=inputs.itemById(PRESSURE_ANGLE_ID).value,  # radians
+        )
+        if spec.module <= 0:
+            raise FusionPartsError("Module must be greater than zero.")
+
+        low = math.radians(MIN_PRESSURE_ANGLE_DEG)
+        high = math.radians(MAX_PRESSURE_ANGLE_DEG)
+        if not low <= spec.pressure_angle <= high:
+            raise FusionPartsError(
+                "Pressure angle must be between %d and %d degrees."
+                % (MIN_PRESSURE_ANGLE_DEG, MAX_PRESSURE_ANGLE_DEG)
+            )
+        return spec

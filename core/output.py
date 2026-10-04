@@ -7,15 +7,26 @@ OUTPUT_ID = "output"
 OUTPUT_COMPONENT = "New component"
 OUTPUT_BODY = "New body"
 
+def _allowed_outputs():
+    """Which output choices make sense for the kind of file that's open.
+
+    Part files can't contain components, assembly files shouldn't get loose
+    bodies, and hybrid files can have either.
+    """
+    intent = get_design_intent()
+    if intent == PART:
+        return [OUTPUT_BODY]
+    if intent == ASSEMBLY:
+        return [OUTPUT_COMPONENT]
+    return [OUTPUT_COMPONENT, OUTPUT_BODY]
+
 def add_output_dropdown(inputs):
-    """Add the Output dropdown to a dialog. Assemblies only get 'New component'."""
+    """Add the Output dropdown to a dialog"""
     dropdown = inputs.addDropDownCommandInput(
         OUTPUT_ID, "Output", adsk.core.DropDownStyles.TextListDropDownStyle
     )
-    if get_design_intent() != PART:
-        dropdown.listItems.add(OUTPUT_COMPONENT, True)
-    if get_design_intent() != ASSEMBLY:
-        dropdown.listItems.add(OUTPUT_BODY, False)
+    for index, option in enumerate(_allowed_outputs()):
+        dropdown.listItems.add(option, index == 0)
     return dropdown
 
 def resolve_target(inputs, component_name):
