@@ -1,7 +1,7 @@
 import math
 from dataclasses import dataclass
 
-from ..core.units import mm
+from ...core.shapes.units import mm
 
 CHAR_WIDTH = 0.7
 LABEL_MARGIN_MM = 0.5

@@ -1,5 +1,5 @@
-from FusionParts.core.units import mm
-from FusionParts.generators.pulley_layout import cap_points, label_fit
+from FusionParts.core.shapes.units import mm
+from FusionParts.generators.pulley.pulley_layout import cap_points, label_fit
 
 
 def test_cap_has_a_cone_corner_only_when_cone_length_is_positive():

@@ -1,6 +1,6 @@
 import adsk.core
 
-from .belts import BELTS, find_belt
+from ..shapes.belts import BELTS, find_belt
 
 BELT_ID = "belt"
 

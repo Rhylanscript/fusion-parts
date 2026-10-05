@@ -1,8 +1,8 @@
 import adsk.core
 
-from .app import FusionPartsError
-from .bores import BORES, BoreChoice, bore_reach, ears_fit, find_bore
-from .units import mm
+from ..fusion.app import FusionPartsError
+from ..shapes.bores import BORES, BoreChoice, bore_reach, ears_fit, find_bore
+from ..shapes.units import mm
 
 BORE_ID = "bore"
 CLEARANCE_ID = "bore_clearance"

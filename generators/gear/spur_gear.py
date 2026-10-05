@@ -1,12 +1,13 @@
 import math
 import adsk.core
 
-from ..core.app import FusionPartsError
-from ..core.bore_inputs import add_bore_inputs, check_bore_fits, read_bore
-from ..core.command import DialogCommand
-from ..core.features import extrude_profile
-from ..core.output import add_output_dropdown, resolve_target
-from ..core.sketches import draw_bore, draw_segments, largest_profile, new_sketch
+from ...core.fusion.app import FusionPartsError
+from ...core.fusion.command import DialogCommand
+from ...core.fusion.features import extrude_profile
+from ...core.fusion.output import add_output_dropdown, resolve_target
+from ...core.fusion.sketches import draw_bore, draw_segments, largest_profile, new_sketch
+from ...core.inputs.bore_inputs import add_bore_inputs, check_bore_fits, read_bore
+
 from .gear_profile import GearSpec, outline_segments
 
 TEETH_ID = "teeth"

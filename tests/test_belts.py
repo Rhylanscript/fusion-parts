@@ -1,9 +1,9 @@
 import math
 
-from FusionParts.core.belts import (
+from FusionParts.core.shapes.belts import (
     BELTS, find_belt, outside_diameter, pitch_diameter, root_radius,
 )
-from FusionParts.core.units import mm
+from FusionParts.core.shapes.units import mm
 
 
 def test_pitch_diameter_is_teeth_times_pitch_over_pi():

@@ -2,10 +2,10 @@ import math
 
 import pytest
 
-from FusionParts.core.bores import (
+from FusionParts.core.shapes.bores import (
     BORES, BoreChoice, bore_outer_radius, bore_reach, bore_segments, ears_fit,
 )
-from FusionParts.core.units import mm
+from FusionParts.core.shapes.units import mm
 
 CLEARANCE = mm(0.1)
 

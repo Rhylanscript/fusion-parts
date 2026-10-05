@@ -1,12 +1,13 @@
 import adsk.core
 
-from ..core.app import FusionPartsError
-from ..core.belt_inputs import add_belt_input, read_belt
-from ..core.command import DialogCommand
-from ..core.features import extrude_profile
-from ..core.output import add_output_dropdown, resolve_target
-from ..core.sketches import draw_segments, new_sketch, ring_profile
-from ..core.units import to_mm
+from ...core.fusion.app import FusionPartsError
+from ...core.fusion.command import DialogCommand
+from ...core.fusion.features import extrude_profile
+from ...core.fusion.output import add_output_dropdown, resolve_target
+from ...core.fusion.sketches import draw_segments, new_sketch, ring_profile
+from ...core.inputs.belt_inputs import add_belt_input, read_belt
+from ...core.shapes.units import to_mm
+
 from .belt_path import belt_loops, belt_teeth, pitch_length
 
 TEETH_A_ID = "belt_teeth_a"

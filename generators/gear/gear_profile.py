@@ -1,6 +1,7 @@
 import math
 from dataclasses import dataclass
-from ..core.geometry import polar
+
+from ...core.shapes.geometry import polar
 
 # How many points we sample along each tooth flank
 # note that more points = smoother curve
