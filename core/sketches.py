@@ -2,11 +2,12 @@ import adsk.core
 import adsk.fusion
 
 from .bores import bore_segments
+from .orientation import ground_plane
 
 def new_sketch(component, plane=None, name=None):
-    """Create a sketch in `component`. Defaults to the XY (top) plane."""
+    """Create a sketch in `component`, defaults to the ground plane"""
     if plane is None:
-        plane = component.xYConstructionPlane
+        plane = ground_plane(component)
     sketch = component.sketches.add(plane)
     if name:
         sketch.name = name
