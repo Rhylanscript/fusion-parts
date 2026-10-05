@@ -7,3 +7,6 @@ Thumbs.db
 
 .private/
 tools/
+
+.ruff_cache/
+.pytest_cache/

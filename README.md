@@ -1,5 +1,7 @@
 # FusionParts
 
+![CI][ci_badge]
+
 Onshape style part generators for Fusion 360: spur gears, timing pulleys and timing belts. Everything runs in normal Fusion dialogs.
 
 ## Tools
@@ -63,8 +65,6 @@ Tooth shapes and belt dimensions come from example parts and published datasheet
 
 Clone the repo into Fusion's add-ins folder (or link it there) so the folder is named `FusionParts`. The folder name, the `.py` file name and the `.manifest` file name must all match.
 
-If Fusion seems to ignore an edit to a helper file, restart Fusion, because Python caches imported files.
-
 ```files
 FusionParts/
     FusionParts.py        entry point (run / stop)
@@ -72,6 +72,18 @@ FusionParts/
     generators/           one file (or a few) per tool; the math lives in *_profile / *_path files
     resources/            toolbar and dropdown icons
 ```
+
+### Running the checks
+
+The geometry math can be tested outside Fusion. From the repo folder, using a normal Python install (not Fusion's):
+
+```bash
+py -m pip install pytest ruff
+py -m ruff check .
+py -m pytest
+```
+
+GitHub runs the same checks on every push and pull request.
 
 ## License
 
@@ -82,3 +94,4 @@ MIT License. See [LICENSE][license].
 [license]: LICENSE
 
 [fk]: https://github.com/rhylanscript/FusionkitRibbonAPI
+[ci_badge]: https://github.com/Rhylanscript/FusionParts/actions/workflows/ci.yml/badge.svg
