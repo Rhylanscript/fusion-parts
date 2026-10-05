@@ -94,4 +94,4 @@ MIT License. See [LICENSE][license].
 [license]: LICENSE
 
 [fk]: https://github.com/rhylanscript/FusionkitRibbonAPI
-[ci_badge]: https://github.com/Rhylanscript/FusionParts/actions/workflows/ci.yml/badge.svg
+[ci_badge]: https://github.com/Rhylanscript/fusion-parts/actions/workflows/ci.yml/badge.svg
