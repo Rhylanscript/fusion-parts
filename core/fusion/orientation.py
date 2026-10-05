@@ -41,3 +41,15 @@ def up_point(radius, height):
     if _is_y_up():
         return (radius, height, 0.0)
     return (radius, 0.0, height)
+
+def offset_ground_plane(component, distance):
+    """A construction plane parallel to the ground plane, `distance` above it.
+
+    `distance` is in Fusion units (use mm()). Used as a mirror plane.
+    """
+    planes = component.constructionPlanes
+    plane_input = planes.createInput()
+    plane_input.setByOffset(
+        ground_plane(component), adsk.core.ValueInput.createByReal(distance)
+    )
+    return planes.add(plane_input)
