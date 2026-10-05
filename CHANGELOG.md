@@ -2,7 +2,7 @@
 
 All notable changes to FusionParts are listed here.
 
-## [Beta]
+## [1.0.0]
 
 ### Added
 
