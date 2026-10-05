@@ -1,7 +1,7 @@
 import adsk.core
 import adsk.fusion
 
-from .orientation import ground_plane
+from .orientation import ground_plane, side_plane, up_point
 
 from ..shapes.bores import bore_segments
 
@@ -110,3 +110,14 @@ def ring_profile(sketch):
         if profile.profileLoops.count == 2:
             return profile
     return None
+
+def up_line(component, height, name="Sweep path"):
+    """draw a straight line from the origin up to `height` and return it
+
+    `height` is in Fusion units (use mm()) the line sits on the upright side
+    plane, so it runs straight up from the ground plane. A sweep follows it
+    """
+    sketch = new_sketch(component, plane=side_plane(component), name=name)
+    start = model_to_sketch(sketch, *up_point(0.0, 0.0))
+    end = model_to_sketch(sketch, *up_point(0.0, height))
+    return sketch.sketchCurves.sketchLines.addByTwoPoints(_to_point(start), _to_point(end))

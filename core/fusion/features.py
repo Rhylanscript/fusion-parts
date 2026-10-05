@@ -50,3 +50,16 @@ def revolve_profile(component, profile, axis, operation=NEW_BODY):
         False, adsk.core.ValueInput.createByReal(2 * math.pi)
     )
     return revolves.add(revolve_input)
+
+def sweep_with_twist(component, profile, path_line, twist, operation=NEW_BODY):
+    """drag `profile` along `path_line` while rotating it by `twist` rad
+
+    `path_line` is a sketch line (see up_line() in sketches.py). The profile
+    turns gradually, so by the end of the path it has rotated by `twist`
+    in total. returns the feature.
+    """
+    path = component.features.createPath(path_line)
+    sweeps = component.features.sweepFeatures
+    sweep_input = sweeps.createInput(profile, path, operation)
+    sweep_input.twistAngle = adsk.core.ValueInput.createByReal(twist)
+    return sweeps.add(sweep_input)
