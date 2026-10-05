@@ -50,3 +50,35 @@ def revolve_profile(component, profile, axis, operation=NEW_BODY):
         False, adsk.core.ValueInput.createByReal(2 * math.pi)
     )
     return revolves.add(revolve_input)
+
+def sweep_with_twist(component, profile, path_line, twist, operation=NEW_BODY):
+    """drag `profile` along `path_line` while rotating it by `twist` rad
+
+    `path_line` is a sketch line (see up_line() in sketches.py). The profile
+    turns gradually, so by the end of the path it has rotated by `twist`
+    in total. returns the feature.
+    """
+    path = component.features.createPath(path_line)
+    sweeps = component.features.sweepFeatures
+    sweep_input = sweeps.createInput(profile, path, operation)
+    sweep_input.twistAngle = adsk.core.ValueInput.createByReal(twist)
+    return sweeps.add(sweep_input)
+
+def mirror_join(component, body, plane):
+    """Mirror `body` across `plane` and join the copy onto it, returns `body`
+
+    The mirrored copy touches the original along the plane, so the two end
+    up as one solid
+    """
+    originals = adsk.core.ObjectCollection.create()
+    originals.add(body)
+    mirrors = component.features.mirrorFeatures
+    mirror = mirrors.add(mirrors.createInput(originals, plane))
+
+    copies = adsk.core.ObjectCollection.create()
+    copies.add(mirror.bodies.item(0))
+    combines = component.features.combineFeatures
+    combine_input = combines.createInput(body, copies)
+    combine_input.operation = JOIN
+    combines.add(combine_input)
+    return body
