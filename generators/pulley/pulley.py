@@ -5,9 +5,9 @@ from ...core.fusion.app import FusionPartsError
 from ...core.fusion.output import add_output_dropdown, resolve_target
 from ...core.fusion.command import DialogCommand
 from ...core.fusion.engrave import engrave_text
-from ...core.fusion.features import CUT, JOIN, extrude_profile, revolve_profile
+from ...core.fusion.features import JOIN, extrude_profile, revolve_profile
+from ...core.fusion.bore_cut import cut_bore
 from ...core.fusion.sketches import (
-    draw_bore,
     draw_segments,
     largest_profile,
     model_to_sketch,
@@ -19,7 +19,6 @@ from ...core.inputs.bore_inputs import add_bore_inputs, check_bore_fits, read_bo
 from ...core.inputs.flange_inputs import add_flange_inputs, read_flanges
 from ...core.inputs.label_inputs import add_label_inputs, read_label
 from ...core.shapes.bores import bore_reach
-from ...core.shapes.units import mm
 from ...core.shapes.belts import outside_diameter, root_radius
 
 from .pulley_layout import cap_points, label_fit
@@ -29,8 +28,6 @@ from .pulley_profile import outline_segments
 TEETH_ID = "teeth"
 WIDTH_ID = "belt_width"
 CLEARANCE_ID = "belt_clearance"
-
-BORE_OVERSHOOT = mm(1.0)
 
 class PulleyCommand(DialogCommand):
     cmd_id = "fp_pulley_cmd"
@@ -86,8 +83,7 @@ class PulleyCommand(DialogCommand):
             body = self._add_cap(target, tip_radius, flange_radius, flanges, teeth_start, -1)
         if flanges.top:
             body = self._add_cap(target, tip_radius, flange_radius, flanges, teeth_end, +1)
-        if bore_choice is not None:
-            self._cut_bore(target, bore_choice, height, body)
+        cut_bore(target, bore_choice, height, body, "Pulley bore")
         if label_plan is not None:
             engrave_text(
                 target, str(teeth), label_plan.height, label_plan.centre,
@@ -145,12 +141,3 @@ class PulleyCommand(DialogCommand):
             target, largest_profile(sketch), up_axis(target), JOIN
         )
         return feature.bodies.item(0)
-
-    def _cut_bore(self, target, bore_choice, height, body):
-        """Cut the shaft bore through the whole pulley, touching only `body`."""
-        sketch = new_sketch(target, name="Pulley bore")
-        draw_bore(sketch, bore_choice)
-        extrude_profile(
-            target, largest_profile(sketch), height + 2 * BORE_OVERSHOOT, CUT,
-            start_offset=-BORE_OVERSHOOT, participants=[body],
-        )

@@ -3,6 +3,7 @@ import adsk.core
 
 from .core.fusion.icons import icon_folder
 from .generators.gear.spur_gear import SpurGearCommand
+from .generators.gear.helical_gear import HelicalGearCommand
 from .generators.pulley.pulley import PulleyCommand
 from .generators.belt.belt import BeltCommand
 
@@ -14,6 +15,7 @@ except ImportError:
 PANEL_ID = "fusionparts_panel"
 
 spur_gear = SpurGearCommand()
+helical_gear = HelicalGearCommand()
 pulley = PulleyCommand()
 belt = BeltCommand()
 
@@ -33,6 +35,7 @@ def run(context):
             return
 
         spur_gear.register()
+        helical_gear.register()
         pulley.register()
         belt.register()
 
@@ -43,6 +46,13 @@ def run(context):
             tooltip="Generate a spur gear.",
             icon_path=icon_folder("spur_gear"),
             on_execute=spur_gear.open,
+        )
+        panel.add_button(
+            id="fp_helical_gear",
+            name="Helical Gear",
+            tooltip="Generate a helical gear.",
+            icon_path=icon_folder("helical_gear"),
+            on_execute=helical_gear.open,
         )
         panel.add_button(
             id="fp_pulley",
@@ -67,5 +77,6 @@ def stop(context):
     if fusionkit is not None:
         fusionkit.unregister_panel(PANEL_ID)
     spur_gear.unregister()
+    helical_gear.unregister()
     pulley.unregister()
     belt.unregister()
