@@ -1,10 +1,10 @@
 import traceback
 import adsk.core
 
-from .generators.spur_gear import SpurGearCommand
-from .generators.pulley import PulleyCommand
-from .generators.belt import BeltCommand
-from .core.icons import icon_folder
+from .core.fusion.icons import icon_folder
+from .generators.gear.spur_gear import SpurGearCommand
+from .generators.pulley.pulley import PulleyCommand
+from .generators.belt.belt import BeltCommand
 
 try:
     import FusionkitRibbonAPI as fusionkit
