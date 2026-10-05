@@ -4,12 +4,15 @@ All notable changes to FusionParts are listed here.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-6
+
 ### Added
 
 - Refactored `core/` and `generators/` files into subfolders for organisation
 - Updated test import paths with new file dirs
 
 - Added the **helical gear** generator with customisation for helix angle
+- Added the **herringbone gear** generator with customisation for helix angle
 
 ## [1.1.1] - 2026-10-5
 

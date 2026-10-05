@@ -3,6 +3,7 @@ import adsk.core
 
 from .core.fusion.icons import icon_folder
 from .generators.gear.spur_gear import SpurGearCommand
+from .generators.gear.herringbone_gear import HerringboneGearCommand
 from .generators.gear.helical_gear import HelicalGearCommand
 from .generators.pulley.pulley import PulleyCommand
 from .generators.belt.belt import BeltCommand
@@ -16,6 +17,7 @@ PANEL_ID = "fusionparts_panel"
 
 spur_gear = SpurGearCommand()
 helical_gear = HelicalGearCommand()
+herringbone_gear = HerringboneGearCommand()
 pulley = PulleyCommand()
 belt = BeltCommand()
 
@@ -36,6 +38,7 @@ def run(context):
 
         spur_gear.register()
         helical_gear.register()
+        herringbone_gear.register()
         pulley.register()
         belt.register()
 
@@ -46,6 +49,7 @@ def run(context):
             tooltip="Generate a spur gear.",
             icon_path=icon_folder("spur_gear"),
             on_execute=spur_gear.open,
+            promoted=True,
         )
         panel.add_button(
             id="fp_helical_gear",
@@ -55,11 +59,20 @@ def run(context):
             on_execute=helical_gear.open,
         )
         panel.add_button(
+            id="fp_herringbone_gear",
+            name="Herringbone Gear",
+            tooltip="Generate a herringbone gear.",
+            icon_path=icon_folder("herringbone_gear"),
+            on_execute=herringbone_gear.open,
+            promoted=True,
+        )
+        panel.add_button(
             id="fp_pulley",
             name="Timing Pulley",
             tooltip="Generate a timing belt pulley.",
             icon_path=icon_folder("pulley"),
             on_execute=pulley.open,
+            promoted=True,
         )
         panel.add_button(
             id="fp_belt",
@@ -76,7 +89,9 @@ def stop(context):
     """Fusion calls this when the add-in stops. Clean up everything we made."""
     if fusionkit is not None:
         fusionkit.unregister_panel(PANEL_ID)
+    
     spur_gear.unregister()
     helical_gear.unregister()
+    herringbone_gear.unregister()
     pulley.unregister()
     belt.unregister()

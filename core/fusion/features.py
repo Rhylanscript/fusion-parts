@@ -63,3 +63,22 @@ def sweep_with_twist(component, profile, path_line, twist, operation=NEW_BODY):
     sweep_input = sweeps.createInput(profile, path, operation)
     sweep_input.twistAngle = adsk.core.ValueInput.createByReal(twist)
     return sweeps.add(sweep_input)
+
+def mirror_join(component, body, plane):
+    """Mirror `body` across `plane` and join the copy onto it, returns `body`
+
+    The mirrored copy touches the original along the plane, so the two end
+    up as one solid
+    """
+    originals = adsk.core.ObjectCollection.create()
+    originals.add(body)
+    mirrors = component.features.mirrorFeatures
+    mirror = mirrors.add(mirrors.createInput(originals, plane))
+
+    copies = adsk.core.ObjectCollection.create()
+    copies.add(mirror.bodies.item(0))
+    combines = component.features.combineFeatures
+    combine_input = combines.createInput(body, copies)
+    combine_input.operation = JOIN
+    combines.add(combine_input)
+    return body
