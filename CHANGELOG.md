@@ -2,6 +2,13 @@
 
 All notable changes to FusionParts are listed here.
 
+## [Unreleased]
+
+### Added
+
+- Refactored `core/` and `generators/` files into subfolders for organisation
+- Updated test import paths with new file dirs
+
 ## [1.1.1] - 2026-10-5
 
 ### Added
