@@ -46,8 +46,32 @@ Which choices appear depends on the design: part designs offer body only, assemb
 
 ## Installation
 
+### Quick install
+
+**Windows:** open PowerShell and paste:
+
+```powershell
+irm https://github.com/Rhylanscript/FusionParts/releases/latest/download/install.ps1 | iex
+```
+
+**macOS:** open Terminal and paste:
+
+```bash
+curl -fsSL https://github.com/Rhylanscript/FusionParts/releases/latest/download/install.sh | bash
+```
+
+The script installs FusionParts and, if you don't have it, [FusionkitRibbonAPI][fk]. Running it again upgrades FusionParts. The scripts are short, so you can read them first in the [`installer`][install] folder.
+
+Then in Fusion:
+
+1. Fully close and reopen Fusion, then press `Shift+S` and open the **Add Ins** tab.
+2. Select **FusionkitRibbonAPI**, tick **Run on Startup** and click **Run**.
+3. Select **FusionParts** and click **Run** (tick **Run on Startup** too if you want it every time).
+
+### Manual install
+
 1. Install FusionkitRibbonAPI by following its README. Turn on **Run on Startup** for it.
-2. Download the latest `FusionParts` zip from the [Releases](https://github.com/Rhylanscript/FusionParts/releases) page and unzip it.
+2. Download the latest `FusionParts` zip from the [Releases][fp-releases] page and unzip it.
 3. Copy the `FusionParts` folder into Fusion's add-ins folder:
 
    | OS      | Path                                                                     |
@@ -98,6 +122,8 @@ MIT License. See [LICENSE][license].
 <!-- links -->
 
 [license]: LICENSE
+[install]: installer
 
 [fk]: https://github.com/rhylanscript/FusionkitRibbonAPI
+[fp-releases]: https://github.com/Rhylanscript/fusion-parts/releases
 [ci_badge]: https://github.com/Rhylanscript/fusion-parts/actions/workflows/ci.yml/badge.svg

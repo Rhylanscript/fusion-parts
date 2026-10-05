@@ -2,6 +2,12 @@
 
 All notable changes to FusionParts are listed here.
 
+## [Unreleased]
+
+### Added
+
+- Install scripts for MacOS and Windows
+
 ## [1.0.0]
 
 ### Added
