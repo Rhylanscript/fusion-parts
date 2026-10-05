@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import adsk.core
 
-from .app import FusionPartsError
+from ..fusion.app import FusionPartsError
 
 ENABLE_ID = "label_enable"
 POSITION_ID = "label_position"

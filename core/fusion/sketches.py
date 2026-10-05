@@ -1,8 +1,9 @@
 import adsk.core
 import adsk.fusion
 
-from .bores import bore_segments
 from .orientation import ground_plane
+
+from ..shapes.bores import bore_segments
 
 def new_sketch(component, plane=None, name=None):
     """Create a sketch in `component`, defaults to the ground plane"""

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import adsk.core
 
-from .app import FusionPartsError
+from ..fusion.app import FusionPartsError
 
 STYLE_ID = "flange_style"
 THICKNESS_ID = "flange_thickness"
