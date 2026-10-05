@@ -2,13 +2,14 @@
 
 All notable changes to FusionParts are listed here.
 
-## [Unreleased]
+## [1.1.0] - 2026-10-5
 
 ### Added
 
 - Install scripts for MacOS and Windows
+- Parts are now generated lying flat on ground instead of upright, so printing them is easier
 
-## [1.0.0]
+## [1.0.0] - 2026-10-5
 
 ### Added
 
