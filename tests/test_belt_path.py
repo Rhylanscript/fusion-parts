@@ -2,9 +2,9 @@ import math
 
 import pytest
 
-from FusionParts.core.belts import find_belt, outside_diameter
-from FusionParts.core.units import mm
-from FusionParts.generators.belt_path import (
+from FusionParts.core.shapes.belts import find_belt, outside_diameter
+from FusionParts.core.shapes.units import mm
+from FusionParts.generators.belt.belt_path import (
     belt_loops, belt_teeth, loop_segments, pitch_length,
 )
 

@@ -2,10 +2,10 @@ import math
 
 import pytest
 
-from FusionParts.core.belts import BELTS
-from FusionParts.generators.gear_profile import GearSpec
-from FusionParts.generators.gear_profile import outline_segments as gear_outline
-from FusionParts.generators.pulley_profile import outline_segments as pulley_outline
+from FusionParts.core.shapes.belts import BELTS
+from FusionParts.generators.gear.gear_profile import GearSpec
+from FusionParts.generators.gear.gear_profile import outline_segments as gear_outline
+from FusionParts.generators.pulley.pulley_profile import outline_segments as pulley_outline
 
 
 def _start(segment):
