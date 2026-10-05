@@ -85,6 +85,12 @@ py -m pytest
 
 GitHub runs the same checks on every push and pull request.
 
+### Making a release
+
+1. Set `version` in `FusionParts.manifest`.
+2. In `CHANGELOG.md`, rename `[Unreleased]` to the new version and date, and add a fresh empty `[Unreleased]` above it.
+3. Merge to `main`. GitHub tags the version, builds `FusionParts-vX.Y.Z.zip` and publishes the release.
+
 ## License
 
 MIT License. See [LICENSE][license].
