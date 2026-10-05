@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - FusionParts.manifest
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: FusionParts
+          fetch-depth: 0
+
+      - name: Read version and check for an existing tag
+        id: version
+        working-directory: FusionParts
+        run: |
+          version=$(python3 -c "import json; print(json.load(open('FusionParts.manifest'))['version'])")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if git rev-parse "v$version" >/dev/null 2>&1; then
+            echo "new=false" >> "$GITHUB_OUTPUT"
+            echo "v$version is already released, nothing to do."
+          else
+            echo "new=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-python@v5
+        if: steps.version.outputs.new == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Run tests
+        if: steps.version.outputs.new == 'true'
+        working-directory: FusionParts
+        run: |
+          pip install pytest
+          pytest
+
+      - name: Get release notes from CHANGELOG.md
+        if: steps.version.outputs.new == 'true'
+        working-directory: FusionParts
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          awk -v v="$VERSION" '
+            /^## \[/ { if (found) exit; if (index($0, "[" v "]")) { found = 1; next } }
+            found { print }
+          ' CHANGELOG.md > ../release-notes.md
+          if ! grep -q '[^[:space:]]' ../release-notes.md; then
+            echo "CHANGELOG.md has no '## [$VERSION]' section. Add one, then push again." >&2
+            exit 1
+          fi
+
+      - name: Build the zip
+        if: steps.version.outputs.new == 'true'
+        working-directory: FusionParts
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: git archive --format=zip --prefix=FusionParts/ -o "../FusionParts-v$VERSION.zip" HEAD
+
+      - name: Create the tag and release
+        if: steps.version.outputs.new == 'true'
+        working-directory: FusionParts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          assets=("../FusionParts-v$VERSION.zip")
+          # Install scripts (added later) are uploaded as separate downloads.
+          if [ -d installer ]; then
+            for file in installer/*; do
+              if [ -f "$file" ]; then
+                assets+=("$file")
+              fi
+            done
+          fi
+          gh release create "v$VERSION" "${assets[@]}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "FusionParts v$VERSION" \
+            --notes-file ../release-notes.md \
+            --target "$GITHUB_SHA"
