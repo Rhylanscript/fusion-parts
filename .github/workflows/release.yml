@@ -65,7 +65,9 @@ jobs:
         working-directory: FusionParts
         env:
           VERSION: ${{ steps.version.outputs.version }}
-        run: git archive --format=zip --prefix=FusionParts/ -o "../FusionParts-v$VERSION.zip" HEAD
+        run: |
+          git archive --format=zip --prefix=FusionParts/ -o "../FusionParts-v$VERSION.zip" HEAD
+          cp "../FusionParts-v$VERSION.zip" ../FusionParts.zip
 
       - name: Create the tag and release
         if: steps.version.outputs.new == 'true'
@@ -74,7 +76,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          assets=("../FusionParts-v$VERSION.zip")
+          assets=("../FusionParts-v$VERSION.zip" "../FusionParts.zip")
           # Install scripts (added later) are uploaded as separate downloads.
           if [ -d installer ]; then
             for file in installer/*; do

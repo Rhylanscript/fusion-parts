@@ -6,3 +6,6 @@
 tests export-ignore
 ruff.toml export-ignore
 installer export-ignore
+
+# use unix line endings for macos script
+*.sh text eol=lf
