@@ -1,0 +1,108 @@
+name: Installer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - installer/**
+      - .github/workflows/installer.yml
+  pull_request:
+    paths:
+      - installer/**
+      - .github/workflows/installer.yml
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        shell: [powershell, pwsh]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: FusionParts
+
+      - name: Install, upgrade and dev-copy guard
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          # Build the zip the same way the release does.
+          $zip = Join-Path $env:RUNNER_TEMP "FusionParts.zip"
+          git -C FusionParts archive --format=zip --prefix=FusionParts/ -o $zip HEAD
+          $env:FUSIONPARTS_ZIP = $zip
+
+          # A fake Fusion add-ins folder, so the real one is never touched.
+          $env:APPDATA = Join-Path $env:RUNNER_TEMP "appdata"
+          $addIns = Join-Path $env:APPDATA "Autodesk\Autodesk Fusion 360\API\AddIns"
+          New-Item -ItemType Directory -Path $addIns | Out-Null
+
+          function Invoke-Installer {
+              Get-Content FusionParts\installer\install.ps1 -Raw | Invoke-Expression
+          }
+          function Assert-Exists($path) {
+              if (-not (Test-Path $path)) { throw "Missing: $path" }
+          }
+
+          Write-Host "== Fresh install =="
+          Invoke-Installer
+          Assert-Exists "$addIns\FusionParts\FusionParts.py"
+          Assert-Exists "$addIns\FusionParts\FusionParts.manifest"
+          Assert-Exists "$addIns\FusionkitRibbonAPI\FusionkitRibbonAPI.manifest"
+
+          Write-Host "== Upgrade replaces the old copy =="
+          New-Item -ItemType File -Path "$addIns\FusionParts\stale.txt" | Out-Null
+          Invoke-Installer
+          if (Test-Path "$addIns\FusionParts\stale.txt") { throw "Old files were not removed" }
+          Assert-Exists "$addIns\FusionParts\FusionParts.py"
+
+          Write-Host "== Dev copies are left alone =="
+          New-Item -ItemType Directory -Path "$addIns\FusionParts\.git" | Out-Null
+          New-Item -ItemType File -Path "$addIns\FusionParts\keep.txt" | Out-Null
+          Invoke-Installer
+          Assert-Exists "$addIns\FusionParts\keep.txt"
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: FusionParts
+
+      - name: Install upgrade and dev copy guard
+        run: |
+          set -euo pipefail
+
+          # Build the zip the same way the release does.
+          git -C FusionParts archive --format=zip --prefix=FusionParts/ -o "$RUNNER_TEMP/FusionParts.zip" HEAD
+          export FUSIONPARTS_ZIP="$RUNNER_TEMP/FusionParts.zip"
+
+          # A fake home folder with a fake Fusion add-ins folder in it.
+          export HOME="$RUNNER_TEMP/home"
+          ADDINS="$HOME/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns"
+          mkdir -p "$ADDINS"
+
+          assert_file() { [ -e "$1" ] || { echo "Missing: $1"; exit 1; }; }
+
+          echo "== Fresh install =="
+          bash < FusionParts/installer/install.sh
+          assert_file "$ADDINS/FusionParts/FusionParts.py"
+          assert_file "$ADDINS/FusionParts/FusionParts.manifest"
+          assert_file "$ADDINS/FusionkitRibbonAPI/FusionkitRibbonAPI.manifest"
+
+          echo "== Upgrade replaces the old copy =="
+          touch "$ADDINS/FusionParts/stale.txt"
+          bash < FusionParts/installer/install.sh
+          [ ! -e "$ADDINS/FusionParts/stale.txt" ] || { echo "Old files were not removed"; exit 1; }
+          assert_file "$ADDINS/FusionParts/FusionParts.py"
+
+          echo "== Dev copies are left alone =="
+          mkdir "$ADDINS/FusionParts/.git"
+          touch "$ADDINS/FusionParts/keep.txt"
+          if bash < FusionParts/installer/install.sh; then
+              echo "Expected the installer to refuse a dev copy"; exit 1
+          fi
+          assert_file "$ADDINS/FusionParts/keep.txt"
