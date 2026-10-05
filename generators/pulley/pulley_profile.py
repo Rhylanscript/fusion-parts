@@ -1,9 +1,9 @@
 import math
 from dataclasses import dataclass
 
-from ..core.belts import outside_diameter, root_radius
-from ..core.geometry import arc_through, polar
-from ..core.units import mm
+from ...core.shapes.belts import outside_diameter, root_radius
+from ...core.shapes.geometry import arc_through, polar
+from ...core.shapes.units import mm
 
 _TINY = 1e-6
 

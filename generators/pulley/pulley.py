@@ -1,18 +1,12 @@
 import adsk.core
 
-from ..core.orientation import side_plane, up_axis, up_point
-from ..core.app import FusionPartsError
-from ..core.belt_inputs import add_belt_input, read_belt
-from ..core.belts import outside_diameter, root_radius
-from ..core.bore_inputs import add_bore_inputs, check_bore_fits, read_bore
-from ..core.bores import bore_reach
-from ..core.command import DialogCommand
-from ..core.engrave import engrave_text
-from ..core.features import CUT, JOIN, extrude_profile, revolve_profile
-from ..core.flange_inputs import add_flange_inputs, read_flanges
-from ..core.label_inputs import add_label_inputs, read_label
-from ..core.output import add_output_dropdown, resolve_target
-from ..core.sketches import (
+from ...core.fusion.orientation import side_plane, up_axis, up_point
+from ...core.fusion.app import FusionPartsError
+from ...core.fusion.output import add_output_dropdown, resolve_target
+from ...core.fusion.command import DialogCommand
+from ...core.fusion.engrave import engrave_text
+from ...core.fusion.features import CUT, JOIN, extrude_profile, revolve_profile
+from ...core.fusion.sketches import (
     draw_bore,
     draw_segments,
     largest_profile,
@@ -20,7 +14,14 @@ from ..core.sketches import (
     new_sketch,
     polygon_segments,
 )
-from ..core.units import mm
+from ...core.inputs.belt_inputs import add_belt_input, read_belt
+from ...core.inputs.bore_inputs import add_bore_inputs, check_bore_fits, read_bore
+from ...core.inputs.flange_inputs import add_flange_inputs, read_flanges
+from ...core.inputs.label_inputs import add_label_inputs, read_label
+from ...core.shapes.bores import bore_reach
+from ...core.shapes.units import mm
+from ...core.shapes.belts import outside_diameter, root_radius
+
 from .pulley_layout import cap_points, label_fit
 from .pulley_profile import outline_segments
 

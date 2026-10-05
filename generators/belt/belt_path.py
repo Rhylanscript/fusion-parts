@@ -1,8 +1,8 @@
 import math
 
-from ..core.belts import outside_diameter, pitch_diameter
-from ..core.geometry import polar
-from ..core.units import mm
+from ...core.shapes.belts import outside_diameter, pitch_diameter
+from ...core.shapes.geometry import polar
+from ...core.shapes.units import mm
 
 def _check_tangent(radius_a, radius_b, distance):
     """Stop if no straight belt section can join two circles this far apart."""
