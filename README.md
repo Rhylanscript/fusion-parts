@@ -1,6 +1,6 @@
 # FusionParts
 
-![CI][ci_badge]
+![CI][ci_badge] ![installer][is_badge]
 
 Onshape style part generators for Fusion 360: spur gears, timing pulleys and timing belts. Everything runs in normal Fusion dialogs.
 
@@ -81,10 +81,6 @@ Then in Fusion:
 
 4. In Fusion, press `Shift+S`, open the **Add Ins** tab, select **FusionParts** and enable it.
 
-## Accuracy
-
-Tooth shapes and belt dimensions come from example parts and published datasheets, not from official standard drawings. Please check fit with your real pulleys, belts and shafts before you manufacture anything. Report any dimension that is off in an issue.
-
 ## Development
 
 Clone the repo into Fusion's add-ins folder (or link it there) so the folder is named `FusionParts`. The folder name, the `.py` file name and the `.manifest` file name must all match.
@@ -111,8 +107,8 @@ GitHub runs the same checks on every push and pull request.
 
 ### Making a release
 
-1. Set `version` in `FusionParts.manifest`.
-2. In `CHANGELOG.md`, rename `[Unreleased]` to the new version and date, and add a fresh empty `[Unreleased]` above it.
+1. Set `version` in `FusionParts.manifest` to the release version
+2. In `CHANGELOG.md`, rename `[Unreleased]` to the matching version and date, and add a fresh empty `[Unreleased]` above it
 3. Merge to `main`. GitHub tags the version, builds `FusionParts-vX.Y.Z.zip` and publishes the release.
 
 ## License
@@ -127,3 +123,4 @@ MIT License. See [LICENSE][license].
 [fk]: https://github.com/rhylanscript/FusionkitRibbonAPI
 [fp-releases]: https://github.com/Rhylanscript/fusion-parts/releases
 [ci_badge]: https://github.com/Rhylanscript/fusion-parts/actions/workflows/ci.yml/badge.svg
+[is_badge]: https://github.com/Rhylanscript/fusion-parts/actions/workflows/installer.yml/badge.svg

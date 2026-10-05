@@ -1,5 +1,6 @@
 import adsk.core
 
+from ..core.orientation import side_plane, up_axis, up_point
 from ..core.app import FusionPartsError
 from ..core.belt_inputs import add_belt_input, read_belt
 from ..core.belts import outside_diameter, root_radius
@@ -22,6 +23,7 @@ from ..core.sketches import (
 from ..core.units import mm
 from .pulley_layout import cap_points, label_fit
 from .pulley_profile import outline_segments
+
 
 TEETH_ID = "teeth"
 WIDTH_ID = "belt_width"
@@ -133,11 +135,14 @@ class PulleyCommand(DialogCommand):
             tip_radius, flange_radius, flanges.thickness,
             flanges.cone_length, teeth_edge, outward,
         )
-        sketch = new_sketch(target, plane=target.xZConstructionPlane, name="Pulley flange")
-        corners = [model_to_sketch(sketch, radius, 0.0, z) for radius, z in points]
+        sketch = new_sketch(target, plane=side_plane(target), name="Pulley flange")
+        corners = [
+            model_to_sketch(sketch, *up_point(radius, height))
+            for radius, height in points
+        ]
         draw_segments(sketch, polygon_segments(corners))
         feature = revolve_profile(
-            target, largest_profile(sketch), target.zConstructionAxis, JOIN
+            target, largest_profile(sketch), up_axis(target), JOIN
         )
         return feature.bodies.item(0)
 
