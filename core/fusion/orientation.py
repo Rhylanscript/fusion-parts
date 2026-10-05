@@ -52,4 +52,6 @@ def offset_ground_plane(component, distance):
     plane_input.setByOffset(
         ground_plane(component), adsk.core.ValueInput.createByReal(distance)
     )
-    return planes.add(plane_input)
+    plane = planes.add(plane_input)
+    plane.isLightBulbOn = False
+    return plane
