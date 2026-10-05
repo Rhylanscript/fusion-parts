@@ -3,11 +3,10 @@ import adsk.core
 
 from ..core.app import FusionPartsError
 from ..core.bore_inputs import add_bore_inputs, check_bore_fits, read_bore
-from ..core.bores import bore_segments
 from ..core.command import DialogCommand
 from ..core.features import extrude_profile
 from ..core.output import add_output_dropdown, resolve_target
-from ..core.sketches import draw_segments, largest_profile, new_sketch
+from ..core.sketches import draw_bore, draw_segments, largest_profile, new_sketch
 from .gear_profile import GearSpec, outline_segments
 
 TEETH_ID = "teeth"
@@ -51,9 +50,7 @@ class SpurGearCommand(DialogCommand):
         target = resolve_target(inputs, "Spur Gear")
         sketch = new_sketch(target, name="Gear outline")
         draw_segments(sketch, outline_segments(spec))
-        if bore_choice is not None:
-            bore, clearance = bore_choice
-            draw_segments(sketch, bore_segments(bore, clearance))
+        draw_bore(sketch, bore_choice)
         extrude_profile(target, largest_profile(sketch), thickness)
 
     def _read_spec(self, inputs):

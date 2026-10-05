@@ -2,6 +2,12 @@
 
 All notable changes to FusionParts are listed here.
 
+## [1.1.1] - 2026-10-5
+
+### Added
+
+- Optional mouse ears on the shaft bore with an adjustable ear diameter
+
 ## [1.1.0] - 2026-10-5
 
 ### Added

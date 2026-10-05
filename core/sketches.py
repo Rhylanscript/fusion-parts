@@ -74,8 +74,7 @@ def draw_bore(sketch, bore_choice):
     """Draw the shaft bore into `sketch`. Does nothing when there is no bore."""
     if bore_choice is None:
         return
-    bore, clearance = bore_choice
-    draw_segments(sketch, bore_segments(bore, clearance))
+    draw_segments(sketch, bore_segments(bore_choice))
 
 def polygon_segments(points):
     """Turn corner points into closed ("line", start, end) pieces for draw_segments()."""
