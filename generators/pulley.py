@@ -5,7 +5,7 @@ from ..core.app import FusionPartsError
 from ..core.belt_inputs import add_belt_input, read_belt
 from ..core.belts import outside_diameter, root_radius
 from ..core.bore_inputs import add_bore_inputs, check_bore_fits, read_bore
-from ..core.bores import bore_outer_radius
+from ..core.bores import bore_reach
 from ..core.command import DialogCommand
 from ..core.engrave import engrave_text
 from ..core.features import CUT, JOIN, extrude_profile, revolve_profile
@@ -106,8 +106,7 @@ class PulleyCommand(DialogCommand):
             return None
         inner_radius = 0.0
         if bore_choice is not None:
-            bore, clearance = bore_choice
-            inner_radius = bore_outer_radius(bore, clearance)
+            inner_radius = bore_reach(bore_choice)
         plan = label_fit(
             len(str(teeth)), inner_radius, floor_radius,
             label.height, label.on_top, label.offset,

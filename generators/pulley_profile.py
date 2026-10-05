@@ -2,7 +2,7 @@ import math
 from dataclasses import dataclass
 
 from ..core.belts import outside_diameter, root_radius
-from ..core.geometry import polar
+from ..core.geometry import arc_through, polar
 from ..core.units import mm
 
 _TINY = 1e-6
@@ -88,18 +88,6 @@ def _rotate(point, angle):
 def _mirror(point):
     return (point[0], -point[1])
 
-def _arc_through(centre, start, end):
-    """Return ("arc", start, middle, end) for the short arc around `centre`."""
-    radius = math.hypot(start[0] - centre[0], start[1] - centre[1])
-    first = math.atan2(start[1] - centre[1], start[0] - centre[0])
-    last = math.atan2(end[1] - centre[1], end[0] - centre[0])
-    difference = (last - first + math.pi) % (2 * math.pi) - math.pi
-    middle = (
-        centre[0] + radius * math.cos(first + difference / 2),
-        centre[1] + radius * math.sin(first + difference / 2),
-    )
-    return ("arc", start, middle, end)
-
 def _place(half, angle, mirrored):
     """Copy of the half-gap points, optionally mirrored, rotated to `angle`."""
     def move(point):
@@ -141,13 +129,13 @@ def outline_segments(belt, teeth):
         tooth_left = left_sides[index]
 
         segments.append(("arc", tooth_left.tip, polar(tip_radius, index * step), right.tip))
-        segments.append(_arc_through(right.fillet_centre, right.tip, right.join))
-        segments.append(_arc_through(right.flank_centre, right.join, right.root))
+        segments.append(arc_through(right.fillet_centre, right.tip, right.join))
+        segments.append(arc_through(right.flank_centre, right.join, right.root))
         if right.has_floor:
             floor_middle = polar(floor_radius, index * step + step / 2)
             segments.append(("arc", right.root, floor_middle, left_next.root))
-            segments.append(_arc_through(left_next.flank_centre, left_next.root, left_next.join))
+            segments.append(arc_through(left_next.flank_centre, left_next.root, left_next.join))
         else:
-            segments.append(_arc_through(left_next.flank_centre, right.root, left_next.join))
-        segments.append(_arc_through(left_next.fillet_centre, left_next.join, left_next.tip))
+            segments.append(arc_through(left_next.flank_centre, right.root, left_next.join))
+        segments.append(arc_through(left_next.fillet_centre, left_next.join, left_next.tip))
     return segments
