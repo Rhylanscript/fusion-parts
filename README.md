@@ -30,7 +30,7 @@ The belt sits on the tooth tips of two pulleys made with the Timing Pulley tool.
 
 ### Shaft bores
 
-goBILDA 8 mm REX and 12 mm REX, or no bore. A bore clearance field makes the hole slightly larger than the shaft.
+goBILDA 8 mm REX and 12 mm REX, or no bore. A bore clearance field makes the hole slightly larger than the shaft. Tick **Mouse ears** to add a small round relief in each corner of the hex hole, which helps the corners print cleanly. The ears are filleted into the flats, and **Mouse ear diameter** sets their size (the fillets are the same size as the ears).
 
 ### Output
 
