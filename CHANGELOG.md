@@ -4,6 +4,10 @@ All notable changes to FusionParts are listed here.
 
 ## [Unreleased]
 
+### Fixed
+
+- Corrected variable name from `$addIns` to `$ADDINS` in `installer.sh` to stop installer from crashing
+
 ## [1.3.1] - 2026-10-6
 
 ### Fixed
