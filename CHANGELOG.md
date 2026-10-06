@@ -4,6 +4,12 @@ All notable changes to FusionParts are listed here.
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-10-6
+
+### Fixed
+
+- FusionParts can now run on startup together with FusionkitRibbonAPI, as it waits for Fusion to finish starting before looking for it, so load order no longer matters
+
 ## [1.3.0] - 2026-10-6
 
 ### Added
