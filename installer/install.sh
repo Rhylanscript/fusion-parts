@@ -69,7 +69,7 @@ fi
 install_addin "FusionParts" "$PARTS_SOURCE"
 
 echo ""
-echo "Installed to $addIns"
+echo "Installed to $ADDINS"
 echo ""
 echo "Next steps:"
 echo "  1. Relaunch Fusion 360"
