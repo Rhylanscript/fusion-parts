@@ -5,7 +5,7 @@ import pytest
 from FusionParts.core.shapes.belts import find_belt, outside_diameter
 from FusionParts.core.shapes.units import mm
 from FusionParts.generators.belt.belt_path import (
-    belt_loops, belt_teeth, loop_segments, pitch_length,
+    belt_loops, belt_teeth, loop_segments, loops_from_radii, pitch_length,
 )
 
 BELT = find_belt("HTD 3M")
@@ -49,3 +49,13 @@ def test_pulleys_too_close_are_rejected():
         loop_segments(1.0, 3.0, 1.5)
     with pytest.raises(ValueError):
         pitch_length(BELT, 24, 36, mm(5))
+
+def test_loops_from_radii_matches_belt_loops():
+    radius_a = outside_diameter(BELT, 24) / 2
+    radius_b = outside_diameter(BELT, 36) / 2
+    direct = loops_from_radii(radius_a, radius_b, mm(BELT.thickness), DISTANCE)
+    assert direct == belt_loops(BELT, 24, 36, DISTANCE)
+
+def test_circles_at_the_same_spot_are_rejected():
+    with pytest.raises(ValueError):
+        loops_from_radii(1.0, 1.0, 0.1, 0.0)
