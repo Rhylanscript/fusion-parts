@@ -31,18 +31,24 @@ def loop_segments(radius_a, radius_b, distance):
         ("arc", top_a, _on_circle(0.0, radius_a, math.pi), bottom_a),
     ]
 
-def belt_loops(belt, teeth_a, teeth_b, distance):
-    """Return (outer_loop, inner_loop) for a belt hugging two pulleys."""
-    radius_a = outside_diameter(belt, teeth_a) / 2
-    radius_b = outside_diameter(belt, teeth_b) / 2
+def loops_from_radii(radius_a, radius_b, thickness, distance):
+    """Return (outer_loop, inner_loop) for a belt hugging two circles.
+
+    The inner loop touches both circles. All lengths are in Fusion units.
+    """
     if distance <= radius_a + radius_b:
         raise ValueError(
             "The pulleys would overlap. Increase the centre distance."
         )
-    thickness = mm(belt.thickness)
     inner = loop_segments(radius_a, radius_b, distance)
     outer = loop_segments(radius_a + thickness, radius_b + thickness, distance)
     return outer, inner
+
+def belt_loops(belt, teeth_a, teeth_b, distance):
+    """Return (outer_loop, inner_loop) for a belt hugging two pulleys."""
+    radius_a = outside_diameter(belt, teeth_a) / 2
+    radius_b = outside_diameter(belt, teeth_b) / 2
+    return loops_from_radii(radius_a, radius_b, mm(belt.thickness), distance)
 
 def pitch_length(belt, teeth_a, teeth_b, distance):
     """Length of the belt's tension cord around both pulleys (Fusion units)."""

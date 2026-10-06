@@ -7,6 +7,7 @@ from .generators.gear.herringbone_gear import HerringboneGearCommand
 from .generators.gear.helical_gear import HelicalGearCommand
 from .generators.pulley.pulley import PulleyCommand
 from .generators.belt.belt import BeltCommand
+from .generators.belt.belt_from_circles import BeltFromCirclesCommand
 
 try:
     import FusionkitRibbonAPI as fusionkit
@@ -20,6 +21,7 @@ helical_gear = HelicalGearCommand()
 herringbone_gear = HerringboneGearCommand()
 pulley = PulleyCommand()
 belt = BeltCommand()
+belt_from_circles = BeltFromCirclesCommand()
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -41,6 +43,7 @@ def run(context):
         herringbone_gear.register()
         pulley.register()
         belt.register()
+        belt_from_circles.register()
 
         panel = fusionkit.register_panel(PANEL_ID, "Parts")
         panel.add_button(
@@ -81,6 +84,13 @@ def run(context):
             icon_path=icon_folder("belt"),
             on_execute=belt.open,
         )
+        panel.add_button(
+            id="fp_belt_from_circles",
+            name="Belt From Surfaces",
+            tooltip="Generate a timing belt around two selected circular objects",
+            icon_path=icon_folder("belt_from_circles"),
+            on_execute=belt_from_circles.open,
+        )
     except Exception:
         ui.messageBox("Failed to start:\n" + traceback.format_exc())
 
@@ -95,3 +105,4 @@ def stop(context):
     herringbone_gear.unregister()
     pulley.unregister()
     belt.unregister()
+    belt_from_circles.unregister()

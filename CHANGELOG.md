@@ -4,6 +4,17 @@ All notable changes to FusionParts are listed here.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-6
+
+### Added
+
+- **Belt From Circles** generator: pick two sketch circles or circular edges and a belt is built around them
+- Flip direction option to grow the belt up or down from the picked circle
+
+### Changed
+
+- Belt outline maths can now be built from plain radii, shared by both belt tools
+
 ## [1.2.0] - 2026-10-6
 
 ### Added

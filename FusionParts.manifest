@@ -6,7 +6,7 @@
     "description": {
         "": "Onshape style generators for Fusion 360: gears, pulleys, belts and more."
     },
-    "version": "1.2.0",
+    "version": "1.3.0",
     "runOnStartup": false,
     "supportedOS": "windows|mac",
     "editEnabled": true

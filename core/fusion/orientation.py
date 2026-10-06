@@ -15,6 +15,13 @@ def _is_y_up():
     )
 
 
+def up_vector():
+    """The model space direction that points straight up, as an (x, y, z) tuple"""
+    if _is_y_up():
+        return (0.0, 1.0, 0.0)
+    return (0.0, 0.0, 1.0)
+
+
 def ground_plane(component):
     """The flat plane parts are drawn on, so they lie flat for printing"""
     if _is_y_up():
