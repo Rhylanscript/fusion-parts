@@ -9,11 +9,6 @@ from .generators.pulley.pulley import PulleyCommand
 from .generators.belt.belt import BeltCommand
 from .generators.belt.belt_from_circles import BeltFromCirclesCommand
 
-try:
-    import FusionkitRibbonAPI as fusionkit
-except ImportError:
-    fusionkit = None
-
 PANEL_ID = "fusionparts_panel"
 
 spur_gear = SpurGearCommand()
@@ -25,12 +20,35 @@ belt_from_circles = BeltFromCirclesCommand()
 
 # pyright: reportAttributeAccessIssue=false
 
-def run(context):
-    """Fusion calls this when the add-in starts."""
+fusionkit = None
+
+_started = False
+_startup_handler = None
+
+class _StartupCompletedHandler(adsk.core.ApplicationEventHandler):
+    """Fusion calls this once it has finished loading every startup add in"""
+
+    def notify(self, eventArgs):
+        _start()
+
+def _load_fusionkit():
+    """try to import FusionkitRibbonAPI. Returns True if success"""
+    global fusionkit
+    try:
+        import FusionkitRibbonAPI
+    except ImportError:
+        return False
+    fusionkit = FusionkitRibbonAPI
+    return True
+
+def _start():
+    """Create the commands and the ribbon buttons (needs FusionkitRibbonAPI)"""
+    global _started
     ui = adsk.core.Application.get().userInterface
 
     try:
-        if fusionkit is None:
+        if _started: return
+        if not _load_fusionkit():
             ui.messageBox(
                 "FusionkitRibbonAPI is not installed.\n"
                 "Install it from: https://github.com/rhylanscript/FusionkitRibbonAPI",
@@ -91,13 +109,36 @@ def run(context):
             icon_path=icon_folder("belt_from_circles"),
             on_execute=belt_from_circles.open,
         )
+        _started = True
+    except Exception:
+        ui.messageBox("Failed to start:\n" + traceback.format_exc())
+
+def run(context):
+    """Fusion calls this when the add in starts"""
+    global _startup_handler
+    app = adsk.core.Application.get()
+    ui = app.userInterface
+
+    try:
+        if app.isStartupComplete:
+            _start()
+        else:
+            _startup_handler = _StartupCompletedHandler()
+            app.startupCompleted.add(_startup_handler)
     except Exception:
         ui.messageBox("Failed to start:\n" + traceback.format_exc())
 
 
 def stop(context):
     """Fusion calls this when the add-in stops. Clean up everything we made."""
-    if fusionkit is not None:
+    global _startup_handler, _started
+    app = adsk.core.Application.get()
+
+    if _startup_handler is not None:
+        app.startupCompleted.remove(_startup_handler)
+        _startup_handler = None
+
+    if fusionkit is not None and _started:
         fusionkit.unregister_panel(PANEL_ID)
     
     spur_gear.unregister()
@@ -106,3 +147,5 @@ def stop(context):
     pulley.unregister()
     belt.unregister()
     belt_from_circles.unregister()
+
+    _started = False
