@@ -88,7 +88,7 @@ def run(context):
             id="fp_belt_from_circles",
             name="Belt From Surfaces",
             tooltip="Generate a timing belt around two selected circular objects",
-            icon_path=icon_folder("belt"),
+            icon_path=icon_folder("belt_from_circles"),
             on_execute=belt_from_circles.open,
         )
     except Exception:

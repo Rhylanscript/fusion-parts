@@ -6,11 +6,12 @@ Onshape style part generators for Fusion 360: spur gears, timing pulleys and tim
 
 ## Tools
 
-| Tool              | What it makes                                                                    |
-| ----------------- | -------------------------------------------------------------------------------- |
-| **Spur Gear**     | Involute spur gear with a shaft bore                                             |
-| **Timing Pulley** | HTD 3M and HTD 5M pulleys with flanges, an engraved tooth count and a shaft bore |
-| **Timing Belt**   | A smooth belt loop (no teeth) around two pulleys, sized to fit them              |
+| Tool                  | What it makes                                                                             |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| **Spur Gear**         | Involute spur gear with a shaft bore                                                      |
+| **Timing Pulley**     | HTD 3M and HTD 5M pulleys with flanges, an engraved tooth count and a shaft bore          |
+| **Timing Belt**       | A smooth belt loop (no teeth) around two pulleys, sized to fit them                       |
+| **Belt From Circles** | A smooth belt loop around two circles you pick, so it fits pulleys you've already placed  |
 
 All three add a button to the **Fusionkit** tab, in the **Parts** panel.
 
@@ -27,6 +28,14 @@ Belt profile, teeth (10 to 200), belt width, belt clearance, flanges (both, bott
 Belt profile, teeth on each pulley, centre distance, belt width and output. The dialog shows the belt's pitch length and tooth count. Real belts come in whole tooth counts, so adjust the centre distance until the readout is close to a whole number.
 
 The belt sits on the tooth tips of two pulleys made with the Timing Pulley tool. Pulley 1 is at the component origin and pulley 2 is at the centre distance along the X axis.
+
+### Belt From Circles
+
+Pick a circle for Pulley 1 and one for Pulley 2. Each can be a sketch circle or a circular edge, such as the tooth tips of a pulley made with the Timing Pulley tool. Then choose the belt profile and belt width. The dialog shows the centre distance, and the belt is built to wrap both circles.
+
+The belt sits on the circles you pick, so choose the tooth tips and it rests on the teeth. It starts at the height of Pulley 1's circle and grows upward. Tick **Flip direction** to grow it downward instead.
+
+Both circles must lie flat on the ground plane (facing straight up or down), the way FusionParts makes its parts. They can be at different heights, but they can't overlap or be the same circle.
 
 ### Shaft bores
 
